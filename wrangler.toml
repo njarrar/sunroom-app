@@ -1,0 +1,11 @@
+# Cloudflare Pages config — deploy with: npm run deploy
+name = "sunroom"
+compatibility_date = "2026-07-01"
+pages_build_output_dir = "dist"
+
+# Workers KV namespace holding the synced annotations blob.
+# The id is created once with:  npx wrangler kv namespace create SUNROOM_KV
+# then pasted here (see DEPLOY.md).
+[[kv_namespaces]]
+binding = "SUNROOM_KV"
+id = "2d2b6efc1c234b3d907e236c0ed25742"

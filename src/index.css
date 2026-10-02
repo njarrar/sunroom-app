@@ -1,0 +1,80 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #fbf8f1;
+  font-family: 'Space Grotesk', sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+/* full viewport height that tracks iOS/Android collapsing browser chrome */
+.app-root {
+  height: 100vh;
+  height: 100dvh;
+}
+
+a {
+  color: #26221c;
+}
+a:hover {
+  color: oklch(0.55 0.13 65);
+}
+
+input,
+textarea,
+button {
+  font-family: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #b3a78f;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #e5dcc8;
+  border-radius: 8px;
+  border: 2px solid #fbf8f1;
+}
+
+/* hover states (design "style-hover") */
+.hv-dim:hover {
+  opacity: 0.85;
+}
+.hv-opaque:hover {
+  opacity: 1 !important;
+}
+.hv-bright:hover {
+  filter: brightness(0.96);
+}
+.hv-bright-97:hover {
+  filter: brightness(0.97);
+}
+.hv-bright-95:hover {
+  filter: brightness(0.95);
+}
+.hv-ink:hover {
+  color: #26221c !important;
+}
+.hv-border-ink:hover {
+  border-color: #26221c !important;
+}
+.hv-card:hover {
+  border-color: #c9bfa9 !important;
+}
+.hv-bg-cream:hover {
+  background: #fbf5e9;
+}
+.hv-bg-sand:hover {
+  background: #f4ecda !important;
+}
+.hv-press:hover {
+  box-shadow: 1px 1px 0 #e8dfcb !important;
+}
