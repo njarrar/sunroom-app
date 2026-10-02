@@ -1,74 +1,106 @@
-# Sunroom — Twitter Bookmarks Browser
+<div align="center">
 
-A local web app to browse, search, annotate, and filter your exported
-Twitter/X bookmarks (`bookmarks_export.json`). The UI implements
-the "Sunroom" Claude Design project (warm three-pane layout: sidebar · feed ·
-detail panel).
+# ☀️ Sunroom
 
-## Usage
+**A calm, warm place to read your X (Twitter) bookmarks.**
 
-Your bookmarks never go in git: `bookmarks_export.json`, `src/data/bookmarks.json`,
-`scripts/overrides.json` and `public/media/` are all ignored. Without them the app
-shows a small made-up sample (`src/data/bookmarks.sample.json`), so a fresh clone runs.
+Browse, search, tag and take notes on everything you saved, sorted into topics for you.
+Runs on your own machine. Your bookmarks never leave it unless you deploy.
+
+![React](https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=white)
+![Cloudflare Pages](https://img.shields.io/badge/Cloudflare-Pages-f38020?logo=cloudflare&logoColor=white)
+![Languages](https://img.shields.io/badge/English%20%2B%20Arabic-supported-c2410c)
+
+<img src="docs/screenshots/desktop-detail.png" alt="Sunroom on desktop: topics on the left, the feed in the middle, a selected bookmark with notes on the right" width="100%">
+
+</div>
+
+## What it does
+
+- **Sorts itself.** Every bookmark lands in one of 18 topics, from Tech & AI to Food & Travel. The sorter reads English and Arabic, knows some accounts by name, and looks at links and emoji. Add your own labels and they always win.
+- **Finds anything.** Search text, names and @handles. Filter by topic, author, year, or posts with pictures.
+- **Remembers what you think.** Favorite, mark read, add a note, add your own tags. Keep loose notes and links in the Notebook.
+- **Shows the big picture.** Insights shows your topics, top authors and saves per year.
+- **Keeps things tidy.** Remove a bookmark and it goes to Trash, where you can bring it back at any time.
+- **Exports.** Download what you're looking at as JSON or CSV, notes and tags included.
+- **Works on your phone.** On small screens the menu slides in and each post opens full screen.
+- **Reads Arabic properly.** Right-to-left posts display the right way round.
+
+<table>
+  <tr>
+    <td width="62%"><img src="docs/screenshots/desktop-insights.png" alt="Insights: topics, top authors and saves per year"></td>
+    <td width="19%"><img src="docs/screenshots/phone-home.png" alt="The feed on a phone"></td>
+    <td width="19%"><img src="docs/screenshots/phone-menu.png" alt="The side menu on a phone"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Insights</sub></td>
+    <td align="center"><sub>Feed on a phone</sub></td>
+    <td align="center"><sub>Menu on a phone</sub></td>
+  </tr>
+</table>
+
+<sub>Screenshots use the made-up sample bookmarks that ship with the repo.</sub>
+
+## Quick start
 
 ```bash
+git clone https://github.com/njarrar/sunroom-app
+cd sunroom-app
 npm install
-# put your bookmarks_export.json in the project folder first (see below)
-node scripts/categorize.js   # (re)classify bookmarks -> src/data/bookmarks.json
-npm run dev                  # start the app
-npm run build                # production build -> dist/
+npm run dev
 ```
 
-## Updating your bookmarks
+Open the address it prints. With no bookmarks of your own yet, you'll see the sample set.
 
-Two ways, both fed by the same export format:
+## Bring in your bookmarks
 
-- **In the app (quick):** sidebar → **⌁ From X…** shows a script
-  (`scripts/export_bookmarks.js`) to paste into the browser console on
-  [x.com/i/bookmarks](https://x.com/i/bookmarks); it auto-scrolls and
-  downloads a fresh `bookmarks_export.json`. Then sidebar → **⇪ Import JSON**
-  with that file: new tweets are auto-categorized in the browser (same
-  classifier via `src/lib/classify.js`), duplicates are skipped, and the
-  import persists in IndexedDB. "remove" clears imported tweets again.
-- **Full pipeline (durable):** replace `bookmarks_export.json` in the repo,
-  then `node scripts/categorize.js` (applies manual overrides too) and
-  `node scripts/download_media.js` (localizes images). Bundled data always
-  wins over an in-app import for the same tweet id.
+**1. Export them from X.** In the app, open the menu and pick **From X…**. It gives you a short script. Open [x.com/i/bookmarks](https://x.com/i/bookmarks), paste the script into the browser console, and it scrolls through your bookmarks and downloads `bookmarks_export.json`.
 
-## Features
+**2. Load them.** Pick one:
 
-- **18 categories.** Base pass: a scoring classifier with English *and* Arabic
-  keywords, per-account rules, link-domain hints, and cashtag/emoji signals
-  (`scripts/categorize.js`). On top of that, `scripts/overrides.json` (yours, not in git) can hold
-  hand-reviewed labels by tweet id, which always win. Each category
-  gets its own hue throughout the UI (chips, avatars, insight bars).
-- **Filters:** topic (sidebar chips), author (click a card's category chip),
-  date (2026 / 2025 / 2024 / ≤ 2023), has-media, my tags, plus word search
-  across text, author, and @handle. Active filters show a "clear all" reset.
-- **Views:** Browse all · Unread · Favorites · My notes · Notebook (standalone
-  notes & links) · Insights (topic distribution, top authors, saves by year).
-- **Annotations:** favorite, read/unread (auto-marks read on open), per-tweet
-  notes, and free-form tags with color-hashed chips. Reading progress is
-  tracked in the sidebar. Saved to `localStorage` instantly; when deployed on
-  Cloudflare Pages they also **sync across devices** through Workers KV
-  (`functions/api/store.js` + `src/lib/sync.js` — see DEPLOY.md). The sidebar
-  shows whether sync is live.
-- **Trash:** remove a bookmark (⌫ on any card or in the detail panel) and it
-  moves to a Trash view — excluded from every view, count, topic, and export,
-  but kept forever and restorable with one tap. Trash state syncs across
-  devices like the other annotations.
-- **Export** the currently filtered list as JSON or CSV (includes your notes
-  and tags).
-- **Fully local:** tweet images are downloaded to `public/media/`
-  (`node scripts/download_media.js`) and served locally, with automatic
-  fallback to the remote URL if a file is missing.
-- RTL rendering for Arabic tweets, newest/oldest sort, "more like this"
-  suggestions in the detail panel.
-- **Responsive:** under 860px the sidebar becomes a ☰ drawer, the detail
-  panel opens full-screen per tweet, and the feed goes single-column. On
-  desktop the sidebar can be collapsed («) for a wider reading area.
+| | How | Good for |
+|---|---|---|
+| **Quick** | Menu → **Import JSON**, pick the file | Trying it out. Sorted in the browser and saved on that device only. |
+| **Full** | Put `bookmarks_export.json` in the project folder, then run the commands below | Keeping it. Applies your labels and saves pictures locally. |
 
-## Notes
+```bash
+node scripts/categorize.js      # sort bookmarks into topics → src/data/bookmarks.json
+node scripts/download_media.js  # save pictures to public/media/
+npm run dev
+```
 
-- Re-running `categorize.js` keeps the manual labels: overrides in
-  `scripts/overrides.json` always win over the heuristic score.
+> [!NOTE]
+> **Your data stays out of git.** `bookmarks_export.json`, `src/data/bookmarks.json`, `scripts/overrides.json` and `public/media/` are all in `.gitignore`. Fork and push freely.
+
+## Your own labels
+
+Disagree with a topic? Put the fix in `scripts/overrides.json`, keyed by post id:
+
+```json
+{
+  "1234567890123456789": "Design & Art"
+}
+```
+
+Run `node scripts/categorize.js` again. Your labels always beat the automatic sorter.
+
+## Put it online (optional)
+
+Sunroom can run on Cloudflare Pages for free, with your notes and tags syncing between devices through Workers KV. [DEPLOY.md](DEPLOY.md) walks through it, including the Cloudflare Access step that keeps the site private to you.
+
+```bash
+npm run deploy
+```
+
+## How it's built
+
+| Part | Where |
+|---|---|
+| The app (React + Vite) | `src/App.jsx` |
+| Topic sorter, shared by scripts and browser | `src/lib/classify.js` |
+| Notes and tags sync | `src/lib/sync.js`, `functions/api/store.js` |
+| Export, sort and picture scripts | `scripts/` |
+| Sample data | `src/data/bookmarks.sample.json`, `public/sample/` |
+
+Notes, tags, favorites and read state save to your browser at once. When the app runs on Cloudflare, they also sync to your other devices.
